@@ -8,6 +8,7 @@ module.exports.create = function create(code, name, credit) {
             modCode: code,
             modName: name,
             creditUnit: parseInt(credit)
+
         }
     })
         .then(function (module) {
@@ -65,7 +66,9 @@ module.exports.deleteByCode = function deleteByCode(code) {
 
 module.exports.retrieveAll = function retrieveAll() {
     // TODO: Return all modules 
-    return prisma.module.findMany();
+    return prisma.module.findMany().then(function (modules){
+        
+    })
 };
 
 module.exports.retrieveByCode = function retrieveByCode(code) {
@@ -76,14 +79,9 @@ module.exports.retrieveByCode = function retrieveByCode(code) {
             modCode: code
         }
     }).then(function (module) {
-        return module;
-    }).catch(function (error) {
-        // Prisma error codes: https://www.prisma.io/docs/orm/reference/error-reference#p2025 
-        // TODO reminder: Handle Prisma Error, throw a new error if module is not found                              
-        // TODO reminder: Return module at the end 
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        if(!module){
             throw new Error(`Module ${code} not found`);
         }
-        throw error;
+        return module;
     })
 };
